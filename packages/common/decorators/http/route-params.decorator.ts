@@ -76,6 +76,11 @@ export const UploadedFile: (
 export const UploadedFiles: () => ParameterDecorator = createRouteParamDecorator(
   RouteParamtypes.FILES,
 );
+
+export const Cookies: (
+  property?: string,
+) => ParameterDecorator = createRouteParamDecorator(RouteParamtypes.COOKIES);
+
 export const Headers: (
   property?: string,
 ) => ParameterDecorator = createRouteParamDecorator(RouteParamtypes.HEADERS);
