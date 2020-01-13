@@ -60,14 +60,15 @@ export class ClientNats extends ClientProxy {
   }
 
   public createSubscriptionHandler(
-    packet: ReadPacket & PacketId,
+    packet: ReadPacket /*& PacketId*/,
     callback: (packet: WritePacket) => any,
   ): Function {
     return (rawPacket: unknown) => {
       const message = this.deserializer.deserialize(rawPacket);
-      if (message.id !== packet.id) {
-        return undefined;
-      }
+      // if (message.id !== packet.id) {
+      //   console.log('##### message.id != packet.id');
+      //   return undefined;
+      // }
       const { err, response, isDisposed } = message;
       if (isDisposed || err) {
         return callback({

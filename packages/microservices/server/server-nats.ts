@@ -77,7 +77,7 @@ export class ServerNats extends Server implements CustomTransportStrategy {
 
   public getMessageHandler(channel: string, client: Client): Function {
     return async (
-      buffer: ReadPacket & PacketId,
+      buffer: ReadPacket /*& PacketId*/,
       replyTo: string,
       callerSubject: string,
     ) => this.handleMessage(channel, buffer, client, replyTo, callerSubject);
@@ -92,19 +92,19 @@ export class ServerNats extends Server implements CustomTransportStrategy {
   ) {
     const natsCtx = new NatsContext([callerSubject]);
     const message = this.deserializer.deserialize(rawMessage, { channel });
-    if (isUndefined((message as IncomingRequest).id)) {
+    if (isUndefined(replyTo)) {
       return this.handleEvent(channel, message, natsCtx);
     }
     const publish = this.getPublisher(
       client,
       replyTo,
-      (message as IncomingRequest).id,
+      // (message as IncomingRequest).id,
     );
     const handler = this.getHandlerByPattern(channel);
     if (!handler) {
       const status = 'error';
       const noHandlerPacket = {
-        id: (message as IncomingRequest).id,
+        // id: (message as IncomingRequest).id,
         status,
         err: NO_MESSAGE_HANDLER,
       };
@@ -116,9 +116,9 @@ export class ServerNats extends Server implements CustomTransportStrategy {
     response$ && this.send(response$, publish);
   }
 
-  public getPublisher(publisher: Client, replyTo: string, id: string) {
+  public getPublisher(publisher: Client, replyTo: string /*, id: string*/) {
     return (response: any) => {
-      Object.assign(response, { id });
+      // Object.assign(response, { id });
       const outgoingResponse = this.serializer.serialize(response);
       return publisher.publish(replyTo, outgoingResponse);
     };

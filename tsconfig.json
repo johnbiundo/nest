@@ -10,9 +10,13 @@
     "experimentalDecorators": true,
     "target": "es6",
     "sourceMap": true,
-    "allowJs": true,
+    "allowJs": false,
     "outDir": "dist",
-    "lib": ["es7"]
+    "lib": ["es7"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": ["packages/**/*", "integration/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
