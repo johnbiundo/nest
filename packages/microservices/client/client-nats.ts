@@ -65,9 +65,9 @@ export class ClientNats extends ClientProxy {
   ): Function {
     return (rawPacket: unknown) => {
       const message = this.deserializer.deserialize(rawPacket);
-      if (message.id !== packet.id) {
-        return undefined;
-      }
+      // if (message.id !== packet.id) {
+      //   return undefined;
+      // }
       const { err, response, isDisposed } = message;
       if (isDisposed || err) {
         return callback({

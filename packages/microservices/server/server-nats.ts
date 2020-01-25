@@ -58,6 +58,8 @@ export class ServerNats extends Server implements CustomTransportStrategy {
           );
 
     const registeredPatterns = [...this.messageHandlers.keys()];
+    // JB
+    console.log('registeredPatterns -> ', registeredPatterns);
     registeredPatterns.forEach(channel => subscribe(channel));
   }
 
@@ -80,7 +82,26 @@ export class ServerNats extends Server implements CustomTransportStrategy {
       buffer: ReadPacket & PacketId,
       replyTo: string,
       callerSubject: string,
-    ) => this.handleMessage(channel, buffer, client, replyTo, callerSubject);
+    ) => {
+      // JB
+      console.log(
+        '\n>>> Building message handler with: \n',
+        '----> channel: ',
+        channel,
+        '\n-----> replyTo: ',
+        replyTo,
+        '\n-----> buffer: ',
+        buffer,
+        '\n',
+      );
+      return this.handleMessage(
+        channel,
+        buffer,
+        client,
+        replyTo,
+        callerSubject,
+      );
+    };
   }
 
   public async handleMessage(
@@ -90,17 +111,24 @@ export class ServerNats extends Server implements CustomTransportStrategy {
     replyTo: string,
     callerSubject: string,
   ) {
+    console.log('>>> handler got raw message: \n', rawMessage, '\n');
     const natsCtx = new NatsContext([callerSubject]);
     const message = this.deserializer.deserialize(rawMessage, { channel });
-    if (isUndefined((message as IncomingRequest).id)) {
+    // === JB
+    if (isUndefined(replyTo)) {
+      console.log('@@@ Plain event\n');
+      // === JB
       return this.handleEvent(channel, message, natsCtx);
     }
+    // === JB
+
     const publish = this.getPublisher(
       client,
       replyTo,
-      (message as IncomingRequest).id,
+      // (message as IncomingRequest).id,
     );
     const handler = this.getHandlerByPattern(channel);
+
     if (!handler) {
       const status = 'error';
       const noHandlerPacket = {
@@ -110,15 +138,16 @@ export class ServerNats extends Server implements CustomTransportStrategy {
       };
       return publish(noHandlerPacket);
     }
+
     const response$ = this.transformToObservable(
       await handler(message.data, natsCtx),
     ) as Observable<any>;
     response$ && this.send(response$, publish);
   }
 
-  public getPublisher(publisher: Client, replyTo: string, id: string) {
+  public getPublisher(publisher: Client, replyTo: string /*, id: string*/) {
     return (response: any) => {
-      Object.assign(response, { id });
+      // Object.assign(response, { id });
       const outgoingResponse = this.serializer.serialize(response);
       return publisher.publish(replyTo, outgoingResponse);
     };

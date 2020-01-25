@@ -63,8 +63,10 @@ export abstract class Server {
     stream$: Observable<any>,
     respond: (data: WritePacket) => void,
   ): Subscription {
+    console.log('>>>>>> In server.send');
     let dataBuffer: WritePacket[] = null;
     const scheduleOnNextTick = (data: WritePacket) => {
+      console.log('>>>>>> packet: ' + JSON.stringify(data));
       if (!dataBuffer) {
         dataBuffer = [data];
         process.nextTick(() => {
