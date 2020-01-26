@@ -128,7 +128,7 @@ describe('ServerNats', () => {
       const natsContext = new NatsContext([callerSubject]);
       server.handleMessage(
         channel,
-        { pattern: '', data, id: '2' },
+        { pattern: '', data },
         null,
         '',
         callerSubject,

@@ -60,7 +60,7 @@ export class ClientNats extends ClientProxy {
   }
 
   public createSubscriptionHandler(
-    packet: ReadPacket & PacketId,
+    packet: ReadPacket, // & PacketId,
     callback: (packet: WritePacket) => any,
   ): Function {
     return (rawPacket: unknown) => {
@@ -84,12 +84,12 @@ export class ClientNats extends ClientProxy {
   }
 
   protected publish(
-    partialPacket: ReadPacket,
+    packet: ReadPacket,
     callback: (packet: WritePacket) => any,
   ): Function {
     try {
-      const packet = this.assignPacketId(partialPacket);
-      const channel = this.normalizePattern(partialPacket.pattern);
+      // const packet = this.assignPacketId(partialPacket);
+      const channel = this.normalizePattern(packet.pattern);
       const serializedPacket = this.serializer.serialize(packet);
 
       const subscriptionHandler = this.createSubscriptionHandler(
