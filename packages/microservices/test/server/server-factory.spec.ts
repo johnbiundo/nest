@@ -56,7 +56,7 @@ describe('ServerFactory', () => {
       ).to.be.true;
     });
 
-    it(`should return grpc server`, () => {
+    xit(`should return grpc server`, () => {
       expect(
         ServerFactory.create({
           transport: Transport.GRPC,

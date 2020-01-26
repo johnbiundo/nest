@@ -79,7 +79,7 @@ export class ServerNats extends Server implements CustomTransportStrategy {
 
   public getMessageHandler(channel: string, client: Client): Function {
     return async (
-      buffer: ReadPacket & PacketId,
+      buffer: ReadPacket /*& PacketId*/,
       replyTo: string,
       callerSubject: string,
     ) => {
@@ -132,7 +132,7 @@ export class ServerNats extends Server implements CustomTransportStrategy {
     if (!handler) {
       const status = 'error';
       const noHandlerPacket = {
-        id: (message as IncomingRequest).id,
+        // id: (message as IncomingRequest).id,
         status,
         err: NO_MESSAGE_HANDLER,
       };

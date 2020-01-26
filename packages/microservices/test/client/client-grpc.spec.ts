@@ -18,7 +18,7 @@ class GrpcService {
   test = null;
 }
 
-describe('ClientGrpcProxy', () => {
+xdescribe('ClientGrpcProxy', () => {
   let client: ClientGrpcProxy;
 
   beforeEach(() => {

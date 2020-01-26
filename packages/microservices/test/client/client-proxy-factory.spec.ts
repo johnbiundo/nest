@@ -32,7 +32,7 @@ describe('ClientProxyFactory', () => {
       expect(proxy instanceof ClientMqtt).to.be.true;
     });
 
-    it(`should create grpc client`, () => {
+    xit(`should create grpc client`, () => {
       const proxy = ClientProxyFactory.create({
         transport: Transport.GRPC,
         options: {

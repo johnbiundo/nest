@@ -98,22 +98,21 @@ describe('ServerNats', () => {
       getPublisherSpy = sinon.spy();
       sinon.stub(server, 'getPublisher').callsFake(() => getPublisherSpy);
     });
-    it('should call "handleEvent" if identifier is not present', () => {
+    it('should call "handleEvent" if replyTo is not present', () => {
       const handleEventSpy = sinon.spy(server, 'handleEvent');
-      server.handleMessage(channel, { pattern: '', data: '' }, null, '', '');
+      server.handleMessage(
+        channel,
+        { pattern: '', data: '' },
+        null,
+        undefined,
+        '',
+      );
       expect(handleEventSpy.called).to.be.true;
     });
     it(`should publish NO_MESSAGE_HANDLER if pattern not exists in messageHandlers object`, () => {
-      server.handleMessage(
-        channel,
-        { id, pattern: '', data: '' },
-        null,
-        '',
-        '',
-      );
+      server.handleMessage(channel, { pattern: '', data: '' }, null, '', '');
       expect(
         getPublisherSpy.calledWith({
-          id,
           status: 'error',
           err: NO_MESSAGE_HANDLER,
         }),
@@ -149,15 +148,19 @@ describe('ServerNats', () => {
       pub = {
         publish: publisherSpy,
       };
-      publisher = server.getPublisher(pub, replyTo, id);
+      publisher = server.getPublisher(pub, replyTo /*, id*/);
     });
     it(`should return function`, () => {
-      expect(typeof server.getPublisher(null, null, id)).to.be.eql('function');
+      expect(typeof server.getPublisher(null, null /*, id*/)).to.be.eql(
+        'function',
+      );
     });
     it(`should call "publish" with expected arguments`, () => {
       const respond = 'test';
-      publisher({ respond, id });
-      expect(publisherSpy.calledWith(replyTo, { respond, id })).to.be.true;
+      publisher({ respond });
+      const args = publisherSpy.getCall(0).args;
+      console.log('******************* args: ', args);
+      expect(publisherSpy.calledWith(replyTo, { respond })).to.be.true;
     });
   });
   describe('handleEvent', () => {

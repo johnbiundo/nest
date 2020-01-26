@@ -13,7 +13,7 @@ class NoopLogger extends Logger {
   warn(message: any, context?: string): void {}
 }
 
-describe('ServerGrpc', () => {
+xdescribe('ServerGrpc', () => {
   let server: ServerGrpc;
   beforeEach(() => {
     server = new ServerGrpc({
